@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6c63ff">
+  <title>Petualangan Pecahan Ceria | Matematika Kelas 1</title>
+  <style>
+    :root {
+      --purple: #6c63ff;
+      --purple-dark: #5148d8;
+      --pink: #ff7eb6;
+      --yellow: #ffd166;
+      --green: #32b879;
+      --red: #ef6470;
+      --ink: #29304b;
+      --muted: #737b95;
+      --paper: #ffffff;
+      --bg: #f4f5ff;
+      --line: #e5e7f5;
+      --shadow: 0 12px 30px rgba(61, 60, 130, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 5%, rgba(255, 209, 102, .28), transparent 23rem),
+        radial-gradient(circle at 94% 16%, rgba(255, 126, 182, .18), transparent 22rem),
+        var(--bg);
+      min-height: 100vh;
+    }
+    button { font: inherit; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #222; outline-offset: 3px; }
+    .app { width: min(100% - 28px, 900px); margin: 0 auto; padding: 18px 0 32px; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      margin-bottom: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1rem; }
+    .brand-icon {
+      width: 44px; height: 44px; display: grid; place-items: center;
+      border-radius: 15px; background: var(--purple); color: white; font-size: 1.65rem;
+      box-shadow: 0 5px 0 var(--purple-dark);
+    }
+    .top-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      border: 1px solid var(--line); background: white; border-radius: 13px;
+      min-width: 44px; min-height: 44px; padding: 8px 12px; color: var(--ink);
+      box-shadow: 0 3px 0 rgba(40, 45, 90, .06);
+    }
+    .screen { display: none; animation: rise .35s ease both; }
+    .screen.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .panel {
+      background: var(--paper); border: 1px solid rgba(224, 226, 247, .9);
+      border-radius: 26px; padding: clamp(20px, 5vw, 38px); box-shadow: var(--shadow);
+    }
+    .hero {
+      overflow: hidden; position: relative; text-align: center;
+      background: linear-gradient(140deg, #fff 0%, #fff8e7 100%);
+    }
+    .hero::before, .hero::after {
+      content: "✦"; position: absolute; color: var(--yellow); font-size: 2.2rem;
+      animation: twinkle 2s infinite alternate;
+    }
+    .hero::before { left: 8%; top: 13%; }
+    .hero::after { right: 9%; top: 22%; color: var(--pink); animation-delay: .6s; }
+    @keyframes twinkle { to { transform: rotate(18deg) scale(1.2); opacity: .55; } }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 7px; border-radius: 999px;
+      padding: 7px 13px; background: #eeedff; color: var(--purple-dark);
+      font-size: .84rem; font-weight: 800; letter-spacing: .02em;
+    }
+    h1 { font-size: clamp(2rem, 7vw, 3.6rem); line-height: 1.08; margin: 18px 0 12px; letter-spacing: -.04em; }
+    h1 .color { color: var(--purple); }
+    h2 { margin: 0 0 10px; font-size: clamp(1.45rem, 4vw, 2rem); }
+    h3 { margin: 0 0 8px; font-size: 1.12rem; }
+    p { line-height: 1.6; }
+    .lead { color: var(--muted); max-width: 580px; margin: 0 auto 20px; font-size: 1.04rem; }
+    .bunny { font-size: clamp(5rem, 18vw, 8.5rem); line-height: 1.1; margin: 18px 0 8px; filter: drop-shadow(0 7px 0 rgba(255, 209, 102, .35)); }
+    .button-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+    .btn {
+      border: 0; border-radius: 15px; padding: 13px 20px; min-height: 48px;
+      font-weight: 900; transition: transform .12s, filter .12s, box-shadow .12s;
+    }
+    .btn:hover { filter: brightness(1.03); transform: translateY(-2px); }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { color: white; background: var(--purple); box-shadow: 0 5px 0 var(--purple-dark); }
+    .btn-secondary { color: var(--purple-dark); background: #eeedff; }
+    .btn-yellow { color: #5b4310; background: var(--yellow); box-shadow: 0 4px 0 #e7b744; }
+    .btn-white { color: var(--ink); background: white; border: 1px solid var(--line); }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .feature { padding: 16px 10px; text-align: center; background: white; border: 1px solid var(--line); border-radius: 18px; }
+    .feature .emoji { font-size: 2rem; display: block; margin-bottom: 7px; }
+    .feature strong { display: block; font-size: .92rem; }
+    .feature small { color: var(--muted); display: block; margin-top: 4px; line-height: 1.4; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .lesson-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+    .lesson-card { border: 1px solid var(--line); border-radius: 20px; padding: 18px; text-align: center; background: #fff; }
+    .lesson-visual { min-height: 105px; display: grid; place-items: center; font-size: 4rem; }
+    .fraction-pizza { font-size: 4rem; display: inline-block; }
+    .fraction-demo {
+      width: 112px; height: 112px; margin: 0 auto 12px; border-radius: 50%;
+      background: conic-gradient(#ffad4d 0 50%, #ffda75 50% 100%);
+      border: 5px solid #e98732; position: relative; overflow: hidden;
+    }
+    .fraction-demo::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background: #fff7dc; transform: translateX(-50%); }
+    .whole-demo { width: 104px; height: 104px; margin: 4px auto 12px; border-radius: 50%; background: #ffbd5a; border: 5px solid #e98732; position: relative; }
+    .whole-demo::before { content: ""; position: absolute; inset: 13px; border: 3px dashed #fff1bd; border-radius: 50%; }
+    .definition { background: #f4f2ff; border-radius: 16px; padding: 14px 16px; line-height: 1.6; }
+    .definition strong { color: var(--purple-dark); }
+    .level-list { display: grid; gap: 12px; margin-top: 18px; }
+    .level-card {
+      display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+      padding: 16px; border: 2px solid var(--line); border-radius: 19px; background: white;
+      color: var(--ink); transition: .15s;
+    }
+    .level-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+    .level-number { width: 54px; height: 54px; flex: 0 0 54px; display: grid; place-items: center; border-radius: 17px; font-size: 1.7rem; background: #fff1c9; }
+    .level-card:nth-child(2) .level-number { background: #ffe4f0; }
+    .level-card:nth-child(3) .level-number { background: #dcf8e9; }
+    .level-info { flex: 1; }
+    .level-info strong { display: block; margin-bottom: 4px; }
+    .level-info small { display: block; color: var(--muted); line-height: 1.4; }
+    .level-arrow { color: var(--purple); font-size: 1.5rem; font-weight: 900; }
+    .game-panel { padding: clamp(16px, 4vw, 30px); }
+    .game-meta { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .pill { display: inline-flex; gap: 6px; align-items: center; background: #f2f1ff; color: var(--purple-dark); padding: 8px 12px; border-radius: 999px; font-weight: 900; font-size: .88rem; }
+    .progress-track { height: 10px; background: #ececf8; border-radius: 999px; overflow: hidden; margin-bottom: 24px; }
+    .progress-fill { width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--purple), var(--pink)); transition: width .3s ease; }
+    .question-box { text-align: center; }
+    .question-art { min-height: 160px; display: grid; place-items: center; margin: 12px auto 18px; }
+    .question-art .big-emoji { font-size: clamp(5rem, 18vw, 8rem); line-height: 1.1; }
+    .visual-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+    .option {
+      min-height: 120px; padding: 12px 8px; background: white; border: 2px solid var(--line);
+      border-radius: 18px; color: var(--ink); display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 8px; font-weight: 800; line-height: 1.35; overflow-wrap: anywhere;
+    }
+    .option:hover { border-color: #b8b4ff; background: #faf9ff; }
+    .option.selected { border-color: var(--purple); background: #f0efff; box-shadow: 0 0 0 3px rgba(108, 99, 255, .12); }
+    .option.correct { border-color: var(--green); background: #e9fff4; }
+    .option.wrong { border-color: var(--red); background: #fff0f1; }
+    .option-visual { font-size: clamp(2rem, 8vw, 3.3rem); line-height: 1.2; }
+    .feedback { display: none; border-radius: 16px; padding: 14px 16px; margin: 14px 0; text-align: left; line-height: 1.5; font-weight: 700; }
+    .feedback.show { display: block; animation: rise .2s ease; }
+    .feedback.good { background: #e7fff1; color: #176b45; }
+    .feedback.try { background: #fff6db; color: #77570c; }
+    .game-actions { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .game-actions .btn { flex: 1; }
+    .result-hero { text-align: center; }
+    .trophy { font-size: 5.5rem; margin: 8px 0; }
+    .score-number { color: var(--purple); font-size: clamp(2.5rem, 9vw, 4rem); font-weight: 1000; letter-spacing: -.04em; }
+    .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0; }
+    .stat { background: #f7f7ff; padding: 16px 8px; border-radius: 17px; text-align: center; }
+    .stat strong { display: block; font-size: 1.5rem; margin-bottom: 4px; }
+    .stat small { color: var(--muted); }
+    .note { color: var(--muted); font-size: .88rem; text-align: center; margin: 18px 0 0; }
+    .toast { position: fixed; bottom: 18px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #29304b; color: white; border-radius: 14px; padding: 12px 18px; box-shadow: var(--shadow); transition: .2s; z-index: 10; max-width: calc(100% - 28px); text-align: center; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    footer { text-align: center; color: var(--muted); font-size: .82rem; padding: 20px 8px 0; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 560px) {
+      .app { width: min(100% - 18px, 900px); padding-top: 10px; }
+      .brand { font-size: .86rem; }
+      .brand-icon { width: 39px; height: 39px; }
+      .panel { border-radius: 21px; }
+      .features { gap: 8px; }
+      .feature { padding: 12px 6px; }
+      .feature strong { font-size: .8rem; }
+      .feature small { font-size: .72rem; }
+      .lesson-grid { gap: 9px; }
+      .lesson-card { padding: 12px 8px; }
+      .visual-options { gap: 7px; }
+      .option { min-height: 112px; font-size: .83rem; padding: 8px 4px; border-radius: 14px; }
+      .option-visual { font-size: 2.4rem; }
+      .game-actions .btn { min-width: 100%; }
+      .result-stats { gap: 7px; }
+      .stat { padding: 12px 4px; }
+      .stat strong { font-size: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🐰</div>
+        <span>Petualangan Pecahan Ceria</span>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="soundBtn" type="button" aria-label="Aktifkan atau matikan suara" title="Suara">🔊</button>
+        <button class="icon-btn" id="helpBtn" type="button" aria-label="Petunjuk bermain" title="Petunjuk">❔</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HALAMAN PEMBUKA -->
+      <section id="homeScreen" class="screen active" aria-labelledby="mainTitle">
+        <div class="panel hero">
+          <span class="eyebrow">🌟 MATEMATIKA • KELAS 1 SD</span>
+          <div class="bunny" role="img" aria-label="Kelinci Bimo">🐰</div>
+          <h1 id="mainTitle">Petualangan<br><span class="color">Pecahan Ceria!</span></h1>
+          <p class="lead">Halo, teman kecil! Aku Bimo. Yuk, belajar mengenal benda utuh dan setengah sambil bermain dan mengumpulkan bintang!</p>
+          <div class="button-row">
+            <button class="btn btn-primary" id="startBtn" type="button">🚀 Mulai Petualangan</button>
+            <button class="btn btn-yellow" id="learnBtn" type="button">📚 Belajar Dulu</button>
+          </div>
+        </div>
+        <div class="features" aria-label="Fitur permainan">
+          <div class="feature"><span class="emoji">🍕</span><strong>Belajar Bergambar</strong><small>Gambar yang mudah dikenali</small></div>
+          <div class="feature"><span class="emoji">⭐</span><strong>Kumpulkan Bintang</strong><small>Jawab soal dengan benar</small></div>
+          <div class="feature"><span class="emoji">🎮</span><strong>3 Level Seru</strong><small>Main sesuai kemampuan</small></div>
+        </div>
+      </section>
+
+      <!-- HALAMAN MATERI -->
+      <section id="learnScreen" class="screen" aria-labelledby="learnTitle">
+        <div class="panel">
+          <div class="section-head">
+            <div><span class="eyebrow">📚 AYO BELAJAR</span><h2 id="learnTitle" style="margin-top:12px">Kenali Utuh dan Setengah</h2></div>
+            <button class="btn btn-white" type="button" data-go="home">✕ Tutup</button>
+          </div>
+          <p>Perhatikan gambar di bawah ini, ya!</p>
+          <div class="lesson-grid">
+            <article class="lesson-card">
+              <div class="whole-demo" role="img" aria-label="Gambar lingkaran utuh"></div>
+              <h3>🟠 Benda Utuh</h3>
+              <p>Satu benda yang masih lengkap dan belum dibagi.</p>
+            </article>
+            <article class="lesson-card">
+              <div class="fraction-demo" role="img" aria-label="Lingkaran dibagi menjadi dua bagian sama besar"></div>
+              <h3>🌗 Setengah</h3>
+              <p>Satu dari dua bagian yang <strong>sama besar</strong>.</p>
+            </article>
+          </div>
+          <div class="definition">
+            <strong>Ingat, teman-teman!</strong><br>
+            Jika satu benda dibagi menjadi dua bagian yang sama besar, setiap bagian disebut <strong>setengah</strong>. Lambangnya adalah <strong>½</strong>.
+          </div>
+          <div class="lesson-grid">
+            <div class="lesson-card"><div class="lesson-visual" role="img" aria-label="Apel utuh">🍎</div><h3>Apel utuh</h3><p>Masih satu apel lengkap.</p></div>
+            <div class="lesson-card"><div class="lesson-visual" role="img" aria-label="Dua potongan apel">🍎🍎</div><h3>Dua bagian</h3><p>Bayangkan satu apel dipotong menjadi dua bagian sama besar.</p></div>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-primary" id="learnPlayBtn" type="button">🎮 Aku Siap Bermain!</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PILIH LEVEL -->
+      <section id="levelScreen" class="screen" aria-labelledby="levelTitle">
+        <div class="panel">
+          <span class="eyebrow">🗺️ PETA PETUALANGAN</span>
+          <h2 id="levelTitle" style="margin-top:14px">Pilih Misi Kamu!</h2>
+          <p class="lead" style="margin:0;text-align:left">Selesaikan setiap misi untuk menjadi Jagoan Pecahan. Setiap jawaban benar bernilai 10 poin.</p>
+          <div class="level-list">
+            <button class="level-card" type="button" data-level="0">
+              <span class="level-number">🍎</span>
+              <span class="level-info"><strong>Level 1 — Misi Benda Utuh</strong><small>3 soal • Kenali benda utuh dan benda yang sudah dibagi.</small></span>
+              <span class="level-arrow" aria-hidden="true">›</span>
+            </button>
+            <button class="level-card" type="button" data-level="1">
+              <span class="level-number">🍕</span>
+              <span class="level-info"><strong>Level 2 — Berburu Setengah</strong><small>4 soal • Cari benda yang dibagi menjadi dua bagian sama besar.</small></span>
+              <span class="level-arrow" aria-hidden="true">›</span>
+            </button>
+            <button class="level-card" type="button" data-level="2">
+              <span class="level-number">🍰</span>
+              <span class="level-info"><strong>Level 3 — Tantangan Pecahan</strong><small>5 soal • Gunakan pengetahuanmu tentang setengah.</small></span>
+              <span class="level-arrow" aria-hidden="true">›</span>
+            </button>
+          </div>
+          <div class="button-row"><button class="btn btn-white" type="button" data-go="home">⬅ Kembali ke Beranda</button></div>
+        </div>
+      </section>
+
+      <!-- HALAMAN GAME -->
+      <section id="gameScreen" class="screen" aria-labelledby="questionTitle">
+        <div class="panel game-panel">
+          <div class="game-meta">
+            <span class="pill" id="levelPill">🍎 Level 1</span>
+            <span class="pill" id="scorePill">⭐ Skor: 0</span>
+          </div>
+          <div class="game-meta" style="margin-bottom:8px">
+            <strong id="questionCounter">Soal 1 dari 3</strong>
+            <span id="starCounter" aria-label="Bintang terkumpul">☆ ☆ ☆</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="Kemajuan permainan" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="question-box">
+            <span class="eyebrow">💡 PIKIRKAN BAIK-BAIK</span>
+            <h2 id="questionTitle" style="margin-top:14px">Mana gambar yang benar?</h2>
+            <p id="questionHint" style="color:var(--muted);margin-bottom:0">Pilih satu jawaban di bawah ini.</p>
+            <div class="question-art" id="questionArt" aria-hidden="true"><span class="big-emoji">🍎</span></div>
+            <div class="visual-options" id="optionsArea" role="group" aria-label="Pilihan jawaban"></div>
+          </div>
+          <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div class="game-actions">
+            <button class="btn btn-white" id="quitBtn" type="button">↩ Pilih Level</button>
+            <button class="btn btn-primary" id="checkBtn" type="button" disabled>Periksa Jawaban ✓</button>
+            <button class="btn btn-primary hidden" id="nextBtn" type="button">Soal Berikutnya ➜</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HALAMAN HASIL -->
+      <section id="resultScreen" class="screen" aria-labelledby="resultTitle">
+        <div class="panel result-hero">
+          <span class="eyebrow">🏆 PETUALANGAN SELESAI</span>
+          <div class="trophy" id="resultEmoji" role="img" aria-label="Piala">🏆</div>
+          <h2 id="resultTitle">Hebat Sekali!</h2>
+          <p id="resultMessage" class="lead">Kamu sudah menyelesaikan misi.</p>
+          <div class="score-number" id="finalScore">0</div>
+          <p style="margin-top:0;color:var(--muted);font-weight:800">POIN KAMU</p>
+          <div class="result-stats">
+            <div class="stat"><strong id="correctStat">0</strong><small>Jawaban benar</small></div>
+            <div class="stat"><strong id="wrongStat">0</strong><small>Perlu latihan</small></div>
+            <div class="stat"><strong id="starStat">☆</strong><small>Bintang</small></div>
+          </div>
+          <div class="definition" id="resultTip">Terus berlatih, ya!</div>
+          <div class="button-row">
+            <button class="btn btn-primary" id="replayBtn" type="button">🔁 Main Lagi</button>
+            <button class="btn btn-yellow" id="chooseLevelBtn" type="button">🗺️ Pilih Level</button>
+            <button class="btn btn-white" type="button" data-go="home">🏠 Beranda</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Dibuat untuk belajar Matematika Kelas 1 SD • Petualangan Pecahan Ceria 🐰
+    </footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    // DATA SOAL: silakan tambahkan atau ubah soal di bagian ini.
+    const levels = [
+      {
+        name: "Misi Benda Utuh", icon: "🍎",
+        questions: [
+          {
+            question: "Mana apel yang masih utuh?",
+            hint: "Cari apel yang masih lengkap, belum dipotong.",
+            art: "🍎",
+            options: [
+              { visual: "🍎", text: "Apel utuh", correct: true },
+              { visual: "🍎|🍎", text: "Dua potongan", correct: false },
+              { visual: "🍏", text: "Apel lain", correct: false }
+            ],
+            explanation: "Benar! Apel utuh masih lengkap dan belum dibagi."
+          },
+          {
+            question: "Mana gambar satu benda utuh?",
+            hint: "Benda utuh belum dibagi menjadi beberapa bagian.",
+            art: "🍪",
+            options: [
+              { visual: "◐", text: "Benda terbagi", correct: false },
+              { visual: "🍪", text: "Satu biskuit utuh", correct: true },
+              { visual: "🍪 🍪", text: "Dua biskuit", correct: false }
+            ],
+            explanation: "Hebat! Satu biskuit lengkap adalah satu benda utuh."
+          },
+          {
+            question: "Apa yang terjadi jika satu kue dipotong menjadi dua?",
+            hint: "Bayangkan satu kue yang dibagi menjadi dua bagian.",
+            art: "🎂",
+            options: [
+              { visual: "🍰", text: "Menjadi bagian-bagian", correct: true },
+              { visual: "🎂", text: "Tetap utuh", correct: false },
+              { visual: "🎂 🎂", text: "Menjadi dua kue baru", correct: false }
+            ],
+            explanation: "Betul! Satu kue yang dipotong menjadi dua memiliki dua bagian."
+          }
+        ]
+      },
+      {
+        name: "Berburu Setengah", icon: "🍕",
+        questions: [
+          {
+            question: "Mana pizza yang dibagi menjadi dua bagian sama besar?",
+            hint: "Kedua bagian harus berukuran sama.",
+            art: "🍕",
+            options: [
+              { visual: "🍕", text: "Pizza utuh", correct: false },
+              { visual: "◐", text: "Dua bagian sama besar", correct: true },
+              { visual: "◔", text: "Dua bagian tidak sama", correct: false }
+            ],
+            explanation: "Hebat! Dua bagian yang sama besar disebut setengah-setengah."
+          },
+          {
+            question: "Satu apel dibagi menjadi dua bagian sama besar. Setiap bagian disebut ...",
+            hint: "Satu dari dua bagian yang sama besar.",
+            art: "🍎",
+            options: [
+              { visual: "1", text: "Satu utuh", correct: false },
+              { visual: "½", text: "Setengah", correct: true },
+              { visual: "2", text: "Dua utuh", correct: false }
+            ],
+            explanation: "Benar! Satu dari dua bagian sama besar disebut setengah (½)."
+          },
+          {
+            question: "Mana gambar yang menunjukkan dua bagian sama besar?",
+            hint: "Bayangkan lingkaran dibelah tepat di tengah.",
+            art: "🍪",
+            options: [
+              { visual: "◐", text: "Bagian sama besar", correct: true },
+              { visual: "◔", text: "Bagian berbeda ukuran", correct: false },
+              { visual: "●", text: "Belum dibagi", correct: false }
+            ],
+            explanation: "Tepat! Kedua bagian pada gambar memiliki ukuran yang sama."
+          },
+          {
+            question: "Ibu membagi roti menjadi dua bagian sama besar. Jika kamu mendapat satu bagian, kamu mendapat ...",
+            hint: "Satu bagian dari dua bagian yang sama besar.",
+            art: "🍞",
+            options: [
+              { visual: "½", text: "Setengah roti", correct: true },
+              { visual: "1", text: "Satu roti utuh", correct: false },
+              { visual: "2", text: "Dua roti utuh", correct: false }
+            ],
+            explanation: "Pintar! Satu bagian dari dua bagian sama besar adalah setengah roti."
+          }
+        ]
+      },
+      {
+        name: "Tantangan Pecahan", icon: "🍰",
+        questions: [
+          {
+            question: "Lambang bilangan setengah adalah ...",
+            hint: "Cari lambang satu per dua.",
+            art: "🔢",
+            options: [
+              { visual: "½", text: "Setengah", correct: true },
+              { visual: "1", text: "Satu", correct: false },
+              { visual: "2", text: "Dua", correct: false }
+            ],
+            explanation: "Benar! Setengah ditulis dengan lambang ½."
+          },
+          {
+            question: "Kue dibagi dua sama besar. Dita mengambil satu bagian. Berapa bagian yang diambil Dita?",
+            hint: "Satu dari dua bagian yang sama besar.",
+            art: "🍰",
+            options: [
+              { visual: "½", text: "Setengah kue", correct: true },
+              { visual: "🍰", text: "Satu kue utuh", correct: false },
+              { visual: "2", text: "Dua kue utuh", correct: false }
+            ],
+            explanation: "Betul! Dita mengambil setengah kue."
+          },
+          {
+            question: "Apakah dua bagian yang ukurannya berbeda disebut dua bagian sama besar?",
+            hint: "Perhatikan apakah kedua bagian ukurannya sama.",
+            art: "◔",
+            options: [
+              { visual: "✅", text: "Ya, sama besar", correct: false },
+              { visual: "❌", text: "Tidak sama besar", correct: true },
+              { visual: "½", text: "Pasti setengah", correct: false }
+            ],
+            explanation: "Tepat! Jika ukurannya berbeda, bagian itu tidak sama besar."
+          },
+          {
+            question: "Bimo membagi satu jeruk menjadi dua bagian sama besar. Satu bagian jeruk adalah ...",
+            hint: "Ingat kata yang kita pelajari hari ini.",
+            art: "🍊",
+            options: [
+              { visual: "½", text: "Setengah jeruk", correct: true },
+              { visual: "1", text: "Satu jeruk utuh", correct: false },
+              { visual: "3", text: "Tiga jeruk", correct: false }
+            ],
+            explanation: "Hebat! Satu dari dua bagian jeruk yang sama besar adalah setengah."
+          },
+          {
+            question: "Pilih pernyataan yang benar!",
+            hint: "Pikirkan arti setengah.",
+            art: "🌟",
+            options: [
+              { visual: "½", text: "Satu dari dua bagian sama besar", correct: true },
+              { visual: "●", text: "Benda yang selalu utuh", correct: false },
+              { visual: "🍪🍪", text: "Dua benda utuh", correct: false }
+            ],
+            explanation: "Luar biasa! Kamu sudah memahami arti setengah."
+          }
+        ]
+      }
+    ];
+
+    const screens = ["homeScreen", "learnScreen", "levelScreen", "gameScreen", "resultScreen"];
+    const state = {
+      levelIndex: 0,
+      questionIndex: 0,
+      score: 0,
+      correct: 0,
+      wrong: 0,
+      selected: null,
+      answered: false,
+      soundOn: true,
+      levelResults: []
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const homeScreen = $("homeScreen");
+    const optionsArea = $("optionsArea");
+
+    function showScreen(id) {
+      screens.forEach(screenId => $(screenId).classList.toggle("active", screenId === id));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toast(message) {
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => el.classList.remove("show"), 2300);
+    }
+
+    function playTone(isCorrect) {
+      if (!state.soundOn) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        const ctx = new AudioContextClass();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.type = "sine";
+        oscillator.frequency.value = isCorrect ? 660 : 220;
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.18);
+        oscillator.onended = () => ctx.close();
+      } catch (error) {
+        // Game tetap berjalan meskipun suara tidak didukung browser.
+      }
+    }
+
+    function shuffleOptions(options) {
+      // Urutan pilihan dibuat acak agar jawaban benar tidak selalu di posisi sama.
+      return options.map((item, index) => ({ item, sort: Math.random(), originalIndex: index }))
+        .sort((a, b) => a.sort - b.sort).map(entry => entry.item);
+    }
+
+    let currentOptions = [];
+
+    function startLevel(levelIndex) {
+      state.levelIndex = levelIndex;
+      state.questionIndex = 0;
+      state.score = 0;
+      state.correct = 0;
+      state.wrong = 0;
+      state.selected = null;
+      state.answered = false;
+      state.levelResults = [];
+      showScreen("gameScreen");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const level = levels[state.levelIndex];
+      const question = level.questions[state.questionIndex];
+      state.selected = null;
+      state.answered = false;
+      currentOptions = shuffleOptions(question.options);
+
+      $("levelPill").textContent = `${level.icon} Level ${state.levelIndex + 1}`;
+      $("scorePill").textContent = `⭐ Skor: ${state.score}`;
+      $("questionCounter").textContent = `Soal ${state.questionIndex + 1} dari ${level.questions.length}`;
+      $("starCounter").textContent = `${"★ ".repeat(Math.min(3, Math.floor(state.score / 30)))}${"☆ ".repeat(3 - Math.min(3, Math.floor(state.score / 30)))}`;
+      $("questionTitle").textContent = question.question;
+      $("questionHint").textContent = question.hint;
+      $("questionArt").innerHTML = `<span class="big-emoji">${question.art}</span>`;
+      $("progressFill").style.width = `${(state.questionIndex / level.questions.length) * 100}%`;
+      $("progressTrack").setAttribute("aria-valuenow", String(Math.round((state.questionIndex / level.questions.length) * 100)));
+      $("feedback").className = "feedback";
+      $("feedback").textContent = "";
+      $("checkBtn").classList.remove("hidden");
+      $("checkBtn").disabled = true;
+      $("nextBtn").classList.add("hidden");
+
+      optionsArea.innerHTML = "";
+      currentOptions.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.setAttribute("aria-pressed", "false");
+        const visual = document.createElement("span");
+        visual.className = "option-visual";
+        visual.textContent = option.visual;
+        const label = document.createElement("span");
+        label.textContent = option.text;
+        button.append(visual, label);
+        button.addEventListener("click", () => selectOption(index));
+        optionsArea.appendChild(button);
+      });
+    }
+
+    function selectOption(index) {
+      if (state.answered) return;
+      state.selected = index;
+      [...optionsArea.children].forEach((button, i) => {
+        button.classList.toggle("selected", i === index);
+        button.setAttribute("aria-pressed", String(i === index));
+      });
+      $("checkBtn").disabled = false;
+    }
+
+    function checkAnswer() {
+      if (state.selected === null || state.answered) return;
+      state.answered = true;
+      const level = levels[state.levelIndex];
+      const question = level.questions[state.questionIndex];
+      const chosen = currentOptions[state.selected];
+      const buttons = [...optionsArea.children];
+      const isCorrect = Boolean(chosen.correct);
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        button.classList.remove("selected");
+        if (currentOptions[index].correct) button.classList.add("correct");
+        else if (index === state.selected) button.classList.add("wrong");
+      });
+
+      const feedback = $("feedback");
+      feedback.classList.add("show");
+      if (isCorrect) {
+        state.score += 10;
+        state.correct += 1;
+        feedback.classList.add("good");
+        feedback.textContent = `🎉 ${question.explanation} +10 poin!`;
+      } else {
+        state.wrong += 1;
+        feedback.classList.add("try");
+        feedback.textContent = `💛 Belum tepat. ${question.explanation} Yuk, ingat kembali materinya!`;
+      }
+      state.levelResults.push(isCorrect);
+      playTone(isCorrect);
+      $("scorePill").textContent = `⭐ Skor: ${state.score}`;
+      $("starCounter").textContent = `${"★ ".repeat(Math.min(3, Math.floor(state.score / 30)))}${"☆ ".repeat(3 - Math.min(3, Math.floor(state.score / 30)))}`;
+      $("progressFill").style.width = `${((state.questionIndex + 1) / level.questions.length) * 100}%`;
+      $("progressTrack").setAttribute("aria-valuenow", String(Math.round(((state.questionIndex + 1) / level.questions.length) * 100)));
+      $("checkBtn").classList.add("hidden");
+      $("nextBtn").classList.remove("hidden");
+      $("nextBtn").textContent = state.questionIndex === level.questions.length - 1 ? "Lihat Hasil 🏆" : "Soal Berikutnya ➜";
+    }
+
+    function nextQuestion() {
+      const level = levels[state.levelIndex];
+      if (state.questionIndex < level.questions.length - 1) {
+        state.questionIndex += 1;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const level = levels[state.levelIndex];
+      const total = level.questions.length;
+      const percent = Math.round((state.correct / total) * 100);
+      let stars = 1;
+      let emoji = "🌱";
+      let title = "Terus Berlatih!";
+      let message = "Kamu sudah berusaha dengan baik. Yuk, belajar lagi dan coba kembali!";
+      let tip = "Ingat: setengah adalah satu dari dua bagian yang sama besar.";
+
+      if (percent >= 80) {
+        stars = 3; emoji = "🏆"; title = "Hebat Sekali!";
+        message = "Kamu jagoan pecahan! Bimo bangga padamu.";
+        tip = "Kamu sudah memahami materi dengan sangat baik. Siap mencoba level lainnya?";
+      } else if (percent >= 50) {
+        stars = 2; emoji = "🌟"; title = "Bagus Sekali!";
+        message = "Usahamu hebat! Terus berlatih supaya makin pintar.";
+        tip = "Ayo ingat kembali: setengah berarti satu dari dua bagian yang sama besar.";
+      }
+      $("resultEmoji").textContent = emoji;
+      $("resultTitle").textContent = title;
+      $("resultMessage").textContent = message;
+      $("finalScore").textContent = `${state.score} / ${total * 10}`;
+      $("correctStat").textContent = `${state.correct}/${total}`;
+      $("wrongStat").textContent = state.wrong;
+      $("starStat").textContent = "⭐".repeat(stars);
+      $("resultTip").textContent = tip;
+      showScreen("resultScreen");
+    }
+
+    function showHelp() {
+      toast("Pilih jawaban dengan mengetuk gambar. Tekan Periksa Jawaban untuk melihat hasilnya. Jawaban benar mendapat 10 poin.");
+    }
+
+    $("startBtn").addEventListener("click", () => showScreen("levelScreen"));
+    $("learnBtn").addEventListener("click", () => showScreen("learnScreen"));
+    $("learnPlayBtn").addEventListener("click", () => showScreen("levelScreen"));
+    $("helpBtn").addEventListener("click", showHelp);
+    $("soundBtn").addEventListener("click", () => {
+      state.soundOn = !state.soundOn;
+      $("soundBtn").textContent = state.soundOn ? "🔊" : "🔇";
+      $("soundBtn").setAttribute("aria-label", state.soundOn ? "Matikan suara" : "Aktifkan suara");
+      toast(state.soundOn ? "Suara diaktifkan." : "Suara dimatikan.");
+    });
+    document.querySelectorAll("[data-level]").forEach(button => {
+      button.addEventListener("click", () => startLevel(Number(button.dataset.level)));
+    });
+    document.querySelectorAll("[data-go='home']").forEach(button => {
+      button.addEventListener("click", () => showScreen("homeScreen"));
+    });
+    $("checkBtn").addEventListener("click", checkAnswer);
+    $("nextBtn").addEventListener("click", nextQuestion);
+    $("quitBtn").addEventListener("click", () => showScreen("levelScreen"));
+    $("chooseLevelBtn").addEventListener("click", () => showScreen("levelScreen"));
+    $("replayBtn").addEventListener("click", () => startLevel(state.levelIndex));
+  </script>
+</body>
+</html>
